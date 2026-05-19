@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information.",
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "Unique username for the user."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the user account was created."
+        }
+      },
+      "required": ["username", "createdAt"]
+    },
+    "JournalEntry": {
+      "title": "Journal Entry",
+      "description": "A private journal entry in the sanctuary.",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "The user's thoughts or feelings."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Unix timestamp of the entry."
+        },
+        "response": {
+          "type": "string",
+          "description": "The spiritual mentor's response."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the owner."
+        }
+      },
+      "required": ["content", "timestamp", "userId"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "Public profile for users."
+    },
+    "users/{userId}/entries/{entryId}": {
+      "schema": "JournalEntry",
+      "description": "Private journal entries of a user."
+    }
+  }
+}

@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation Blueprints
+    function isValidUser(data) {
+      return data.username is string && data.username.size() >= 3 && data.username.size() <= 32
+          && data.createdAt is timestamp
+          && data.keys().hasAll(['username', 'createdAt']) && data.keys().size() == 2;
+    }
+
+    function isValidEntry(data) {
+      return data.content is string && data.content.size() <= 10000
+          && data.timestamp is number
+          && data.userId == request.auth.uid
+          && (data.keys().hasAll(['content', 'timestamp', 'userId']) || data.keys().hasAll(['content', 'timestamp', 'userId', 'response']))
+          && data.keys().size() <= 4;
+    }
+
+    match /users/{userId} {
+      allow get: if isSignedIn();
+      allow create: if isOwner(userId) && isValidUser(incoming()) && isValidId(userId);
+      allow update: if isOwner(userId) && isValidUser(incoming())
+          && (incoming().diff(existing()).affectedKeys().hasOnly(['username']));
+
+      match /entries/{entryId} {
+        allow list: if isOwner(userId);
+        allow get: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidEntry(incoming()) && isValidId(entryId);
+        allow update: if isOwner(userId) && isValidEntry(incoming())
+            && (incoming().diff(existing()).affectedKeys().hasOnly(['content', 'timestamp', 'response']));
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}

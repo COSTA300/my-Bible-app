@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-scripture: "Cormorant+Garamond", serif;
+  
+  --color-sanctuary-bg: #FDFCFB;
+  --color-sanctuary-ink: #1A1A1A;
+  --color-sanctuary-gold: #C5A059;
+  --color-sanctuary-olive: #5A5A40;
+  --color-sanctuary-paper: #F5F2ED;
+}
+
+@layer base {
+  body {
+    @apply bg-sanctuary-bg text-sanctuary-ink font-sans;
+  }
+}
+
+.markdown-body {
+  @apply space-y-4 leading-relaxed;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  @apply font-serif font-bold text-sanctuary-olive;
+}
+
+.markdown-body blockquote {
+  @apply border-l-4 border-sanctuary-gold pl-4 italic text-sanctuary-olive font-scripture text-lg;
+}

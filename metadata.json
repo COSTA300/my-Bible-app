@@ -1,0 +1,6 @@
+{
+  "name": "God's child",
+  "description": "An interactive, spiritually honest Bible companion. Featuring tiered teaching, prayer training, and real-life spiritual accountability.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
